@@ -74,7 +74,7 @@ menu() {
 
     "-l" | "--logs")
         create_dir_if_not_exist
-        create_log_of_PROCESSES 2>/dev/null
+        create_log_of_processes 2>/dev/null
         check
         ;;
     "-h" | "--help") help ;;
