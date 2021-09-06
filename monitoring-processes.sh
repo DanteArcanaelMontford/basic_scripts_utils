@@ -25,7 +25,8 @@ create_log_of_processes() {
     local byte=1024
 
     for pid in $PROCESSES; do
-        local process_name=$(ps -p $pid -o comm=) # get processs name by pid
+        local process_name=$(ps -p $pid -o comm=)    # get processs name by pid
+        process_name=$(echo ${process_name//[' ']/}) #
 
         local log=$(date +%F,%H:%M:%S,) # get formated date
 
@@ -55,9 +56,21 @@ most_ram_usage_procesess() {
         create_line
         echo "[+] Process name -> $process_name "
         echo "[+] PID -> $pid"
-        echo "[+] Size in MB -> $size_in_megabytes MB"
+        echo "[+] Size in MB -> $size_in_megabytes"
     done
     create_line
+}
+
+remove_logs-dir() {
+	if [ -d logs ]; then
+        	rm -r logs/
+    	fi
+}
+
+print_logs() {
+	if [ -d logs ]; then
+		cat logs/*.log
+	fi
 }
 
 help() {
@@ -65,18 +78,24 @@ help() {
     echo "[+] -h or --help -> This menu"
     echo "[+] -p or --print -> Print top 10 most usage processes"
     echo "[+] -l or --logs -> Create a directory with basic logs of the most RAM usage processes"
+    echo "[+] -pl or --print-logs -> print logs into log directory"
+    echo "[+] -rml or --remove-logs-dir -> remove logs directory"
     create_line
 }
 
 menu() {
     case $1 in
     "-p" | "--print") most_ram_usage_procesess ;;
+    "-pl" | "--print-logs") print_logs ;;
+    "-rml" | "--remove-logs-dir") remove_logs-dir ;;
+
 
     "-l" | "--logs")
         create_dir_if_not_exist
-        create_log_of_processes 2>/dev/null
+        create_log_of_processes 2>logs/errors.log
         check
         ;;
+
     "-h" | "--help") help ;;
 
     *) help ;;
