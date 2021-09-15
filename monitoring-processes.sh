@@ -2,9 +2,18 @@
 #----------------------------------------VARIABLES----------------------------------------------------------#
 PROCESSES=$(ps -e -o pid --sort -size | head -n 11 | grep [1-9]) # get top10 PROCESSES by RAM usage
 
+red=$'\e[1;31m'
+grn=$'\e[1;32m'
+blu=$'\e[1;34m'
+mag=$'\e[1;35m'
+cyn=$'\e[1;36m'
+yllw=$'\e[1;43m'
+white=$'\e[0m'
+
 #----------------------------------------FUNCTIONS----------------------------------------------------------#
+
 create_line() {
-    echo "--------------------------------------------------------------------------------------"
+    echo -e "$cyn--------------------------------------------------------------------------------------$white"
 }
 
 check() {
@@ -26,7 +35,7 @@ create_log_of_processes() {
 
     for pid in $PROCESSES; do
         local process_name=$(ps -p $pid -o comm=)    # get processs name by pid
-        process_name=$(echo ${process_name//[' ']/}) #
+        process_name=$(echo ${process_name//[' ']/}) # ignore spaces to avoid erros
 
         local log=$(date +%F,%H:%M:%S,) # get formated date
 
@@ -40,7 +49,6 @@ create_log_of_processes() {
         echo "$size_in_megabytes MB" >>logs/$process_name.log
 
     done
-
 }
 
 most_ram_usage_procesess() {
@@ -54,9 +62,9 @@ most_ram_usage_procesess() {
         local size_in_megabytes=$(bc <<<"scale=2;$process_size/$byte") # convert size to megabytes (MB)
 
         create_line
-        echo "[+] Process name -> $process_name "
-        echo "[+] PID -> $pid"
-        echo "[+] Size in MB -> $size_in_megabytes"
+        echo -e "$red[+]$white $mag Process name $white  ->  $grn $process_name $white"
+        echo -e "$red[+]$white $mag PID $white           ->  $grn $pid $white"
+        echo -e "$red[+]$white $mag Size  in MB $white   ->  $grn  $size_in_megabytes $white"
     done
     create_line
 }
@@ -75,11 +83,11 @@ print_logs() {
 
 help() {
     create_line
-    echo "[+] -h or --help -> This menu"
-    echo "[+] -p or --print -> Print top 10 most usage processes"
-    echo "[+] -l or --logs -> Create a directory with basic logs of the most RAM usage processes"
-    echo "[+] -pl or --print-logs -> print logs into log directory"
-    echo "[+] -rml or --remove-logs-dir -> remove logs directory"
+    echo -e "$red[+]$white -h or --help -> This menu"
+    echo "$red[+]$white -p or --print -> Print top 10 most usage processes"
+    echo "$red[+]$white -l or --logs -> Create a directory with basic logs of the most RAM usage processes"
+    echo "$red[+]$white -pl or --print-logs -> Print logs into log directory"
+    echo "$red[+]$white -rml or --remove-logs-dir -> Remove logs directory"
     create_line
 }
 
