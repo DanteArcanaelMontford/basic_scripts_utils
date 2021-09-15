@@ -7,7 +7,6 @@ grn=$'\e[1;32m'
 blu=$'\e[1;34m'
 mag=$'\e[1;35m'
 cyn=$'\e[1;36m'
-yllw=$'\e[1;43m'
 white=$'\e[0m'
 
 #----------------------------------------FUNCTIONS----------------------------------------------------------#
@@ -84,10 +83,10 @@ print_logs() {
 help() {
     create_line
     echo -e "$red[+]$white -h or --help -> This menu"
-    echo "$red[+]$white -p or --print -> Print top 10 most usage processes"
-    echo "$red[+]$white -l or --logs -> Create a directory with basic logs of the most RAM usage processes"
-    echo "$red[+]$white -pl or --print-logs -> Print logs into log directory"
-    echo "$red[+]$white -rml or --remove-logs-dir -> Remove logs directory"
+    echo "$red[+]$white -p or --print => Print top 10 most usage processes"
+    echo "$red[+]$white -l or --logs => Create a directory with basic logs of the most RAM usage processes"
+    echo "$red[+]$white -pl or --print-logs => Print logs into log directory"
+    echo "$red[+]$white -rml or --remove-logs-dir => Remove logs directory"
     create_line
 }
 
