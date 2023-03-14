@@ -30,6 +30,7 @@ active_ssh_as_service() {
     sleep 1
     echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
   elif [ "$ssh_is_inactive_check2" == "inactive" ]
+  then
     echo "[+] ssh is inactive"
     sleep 1
     echo "[+] Activating ssh..."
