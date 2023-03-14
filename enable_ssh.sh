@@ -55,29 +55,25 @@ active_ssh_as_service() {
 }
 
 echo "-----------------------------------------------------------------"
-if [ -n "$check_stat" ]
+
+
+echo "[+] Looking for ssh on the system..."
+sleep 1
+echo "[+] ssh founded in the system"
+sleep 1
+echo "[+] Detected $init_system"
+if [[ -f $ssh_config_path ]]
 then
-  echo "[+] Looking for ssh on the system..."
   sleep 1
-  echo "[+] ssh founded in the system"
-  if [ "$init_system" == "systemd" ]
-  then
-    sleep 1
-    echo "[+] Detected $init_system"
-    if [[ -f $ssh_config_path ]]
-    then
-      sleep 1
-      echo "[+] Path to ssh config file $ssh_config_path"
-      sleep 1
-      echo "[+] Adding ssh port service on config file..."
-      # echo "Port 22" >> $ssh_config_path
-      ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
-      sleep 1
-      # echo "[+] Port 22 config file added on line $ssh_file_port_line"
-      active_ssh_as_service
-      sleep 1
-      echo "[+] Done!"
-      echo "-----------------------------------------------------------------"
-    fi
-  fi
+  echo "[+] Path to ssh config file $ssh_config_path"
+  sleep 1
+  echo "[+] Adding ssh port service on config file..."
+  # echo "Port 22" >> $ssh_config_path
+  ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
+  sleep 1
+  # echo "[+] Port 22 config file added on line $ssh_file_port_line"
+  active_ssh_as_service
+  sleep 1
+  echo "[+] Done!"
+  echo "-----------------------------------------------------------------"
 fi
