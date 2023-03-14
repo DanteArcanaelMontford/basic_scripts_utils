@@ -12,10 +12,10 @@ ssh_config_path=$(find /etc/ -name "sshd_config" 2>/dev/null)
 
 check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 
-check_systemd=$(ps --no-headers -o comm 1)
+init_system=$(ps --no-headers -o comm 1)
 
 
-active_ssh_by_systemd() {
+active_ssh_as_service() {
   ssh_is_inactive=$(sudo systemctl status ssh | grep inactive | awk '{print $2}')
 
   echo "[+] Cheking if ssh service is active on the system..."
@@ -44,10 +44,10 @@ then
   echo "[+] Looking for ssh on the system..."
   sleep 1
   echo "[+] ssh founded in the system"
-  if [ "$check_systemd" == "systemd" ]
+  if [ "$init_system" == "systemd" ]
   then
     sleep 1
-    echo "[+] Detected $check_systemd"
+    echo "[+] Detected $init_system"
     if [[ -f $ssh_config_path ]]
     then
       sleep 1
@@ -58,7 +58,7 @@ then
       ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
       sleep 1
       # echo "[+] Port 22 config file added on line $ssh_file_port_line"
-      active_ssh_by_systemd
+      active_ssh_as_service
       sleep 1
       echo "[+] Done!"
       echo "-----------------------------------------------------------------"
@@ -66,7 +66,21 @@ then
   fi
 else
   sleep 1
-  echo "[+] Detected $check_systemd"
+  echo "[+] Detected $init_system"
+
+  sleep 1
+  echo "[+] Path to ssh config file $ssh_config_path"
+  sleep 1
+  echo "[+] Adding ssh port service on config file..."
+  # echo "Port 22" >> $ssh_config_path
+  ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
+  sleep 1
+  # echo "[+] Port 22 config file added on line $ssh_file_port_line"
+  active_ssh_as_service
+  sleep 1
+  echo "[+] Done!"
+  echo "-----------------------------------------------------------------"
+
   for f in ${!os_info[@]}
   do
     if [[ -f $f ]];then
