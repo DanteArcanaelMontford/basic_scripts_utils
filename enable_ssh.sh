@@ -28,6 +28,13 @@ active_ssh_by_systemd() {
     sudo systemctl start ssh
     sleep 1
     echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
+  else
+    echo "[+] ssh is inactive"
+    sleep 1
+    echo "[+] Activating ssh..."
+    sudo service ssh start
+    sleep 1
+    echo "[+] ssh $(sudo service ssh status | grep active | awk '{print $2}')"
   fi
 }
 
