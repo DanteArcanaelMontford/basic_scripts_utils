@@ -44,27 +44,29 @@ then
   echo "[+] Looking for ssh on the system..."
   sleep 1
   echo "[+] ssh founded in the system"
-  if [ -n "$check_systemd" ]
+  if [ "$check_systemd" == "systemd" ]
   then
+    sleep 1
+    echo "[+] Detected $check_systemd"
     if [[ -f $ssh_config_path ]]
     then
       sleep 1
       echo "[+] Path to ssh config file $ssh_config_path"
       sleep 1
       echo "[+] Adding ssh port service on config file..."
-      echo "Port 22" >> $ssh_config_path
+      # echo "Port 22" >> $ssh_config_path
       ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
       sleep 1
-      echo "[+] Port 22 config file added on line $ssh_file_port_line"
+      # echo "[+] Port 22 config file added on line $ssh_file_port_line"
       active_ssh_by_systemd
       sleep 1
       echo "[+] Done!"
       echo "-----------------------------------------------------------------"
     fi
   fi
-
 else
-  echo "[+] ssh isn't in the system"
+  sleep 1
+  echo "[+] Detected $check_systemd"
   for f in ${!os_info[@]}
   do
     if [[ -f $f ]];then
