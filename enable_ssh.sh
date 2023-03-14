@@ -10,6 +10,9 @@ install_ssh() {
   os_info[/etc/centos-release]="yum install -y"
   os_info[/etc/fedora-release]="dnf install -y"
 
+  echo "-----------------------------------------------------------------"
+  echo "[+] Installing ssh to the system if is not installed..."
+  echo "-----------------------------------------------------------------"
   for f in ${!os_info[@]}
   do
     if [[ -f $f ]];then
