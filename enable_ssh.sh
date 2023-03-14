@@ -48,6 +48,7 @@ active_ssh_as_service() {
     echo "[+] ssh is inactive"
     sleep 1
     echo "[+] Activating ssh..."
+    echo -n "[+] "
     sudo service ssh start
     sleep 1
     echo "[+] ssh $(sudo service ssh status | grep active | awk '{print $2}')"
