@@ -36,7 +36,7 @@ active_ssh_as_service() {
 
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
-  if [ "$ssh_is_inactive_check1" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]
+  if [[ "$ssh_is_inactive_check1" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]]
   then
     echo "[+] ssh is inactive"
     sleep 1
@@ -44,7 +44,7 @@ active_ssh_as_service() {
     sudo systemctl start ssh
     sleep 1
     echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
-  elif [ "$ssh_is_inactive_check2" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]
+  elif [[ "$ssh_is_inactive_check2" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]]
   then
     echo "[+] ssh is inactive"
     sleep 1
