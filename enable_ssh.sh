@@ -31,12 +31,11 @@ init_system=$(ps --no-headers -o comm 1)
 
 
 active_ssh_as_service() {
-  ssh_is_inactive_check1=$(sudo systemctl status ssh | grep inactive | awk '{print $2}')
-  ssh_is_inactive_check2=$(sudo service ssh status | grep inactive | awk '{print $2}')
+
 
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
-  if [[ "$ssh_is_inactive_check1" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]]
+  if [[ "$init_system" == "systemd" ]]
   then
     echo "[+] ssh is inactive"
     sleep 1
@@ -44,7 +43,7 @@ active_ssh_as_service() {
     sudo systemctl start ssh
     sleep 1
     echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
-  elif [[ "$ssh_is_inactive_check2" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]]
+  elif [[ "$init_system" == "init" ]]
   then
     echo "[+] ssh is inactive"
     sleep 1
