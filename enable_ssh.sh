@@ -1,11 +1,26 @@
 #!/usr/bin/env bash
 
 # Verify what Operating System is being used
-declare -A os_info;
-os_info[/etc/debian_version]="apt-get install -y"
-os_info[/etc/alpine-release]="apk --update add"
-os_info[/etc/centos-release]="yum install -y"
-os_info[/etc/fedora-release]="dnf install -y"
+
+install_ssh() {
+
+  declare -A os_info;
+  os_info[/etc/debian_version]="apt-get install -y"
+  os_info[/etc/alpine-release]="apk --update add"
+  os_info[/etc/centos-release]="yum install -y"
+  os_info[/etc/fedora-release]="dnf install -y"
+
+  for f in ${!os_info[@]}
+  do
+    if [[ -f $f ]];then
+      package_manager=${os_info[$f]}
+    fi
+  done
+  package="ssh"
+  ${package_manager} ${package}
+}
+
+install_ssh
 
 # Get ssh config file if exists
 ssh_config_path=$(find /etc/ -name "sshd_config" 2>/dev/null)
@@ -21,7 +36,7 @@ active_ssh_as_service() {
 
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
-  if [ "$ssh_is_inactive_check1" == "inactive" ]
+  if [ "$ssh_is_inactive_check1" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]
   then
     echo "[+] ssh is inactive"
     sleep 1
@@ -29,7 +44,7 @@ active_ssh_as_service() {
     sudo systemctl start ssh
     sleep 1
     echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
-  elif [ "$ssh_is_inactive_check2" == "inactive" ]
+  elif [ "$ssh_is_inactive_check2" == "inactive" || "$ssh_is_inactive_check1" == "ssh: unreconized service" ]
   then
     echo "[+] ssh is inactive"
     sleep 1
@@ -66,31 +81,4 @@ then
       echo "-----------------------------------------------------------------"
     fi
   fi
-else
-  sleep 1
-  echo "[+] Detected $init_system"
-
-  sleep 1
-  echo "[+] Path to ssh config file $ssh_config_path"
-  sleep 1
-  echo "[+] Adding ssh port service on config file..."
-  # echo "Port 22" >> $ssh_config_path
-  ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
-  sleep 1
-  # echo "[+] Port 22 config file added on line $ssh_file_port_line"
-  active_ssh_as_service
-  sleep 1
-  echo "[+] Done!"
-  echo "-----------------------------------------------------------------"
-
-  for f in ${!os_info[@]}
-  do
-    if [[ -f $f ]];then
-      package_manager=${os_info[$f]}
-    fi
-  done
-
-  package="ssh"
-
-  ${package_manager} ${package}
 fi
