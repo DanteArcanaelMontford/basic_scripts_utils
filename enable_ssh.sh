@@ -34,8 +34,6 @@ init_system=$(ps --no-headers -o comm 1)
 
 
 active_ssh_as_service() {
-
-
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
   if [[ "$init_system" == "systemd" ]]
@@ -44,8 +42,8 @@ active_ssh_as_service() {
     sleep 1
     echo "[+] Activating ssh..."
     sudo systemctl start ssh
-    sleep 1
-    echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
+    # sleep 1
+    # echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
   elif [[ "$init_system" == "init" ]]
   then
     echo "[+] ssh is inactive"
@@ -53,8 +51,8 @@ active_ssh_as_service() {
     echo "[+] Activating ssh..."
     echo -n "[+] "
     sudo service ssh start
-    sleep 1
-    echo "[+] ssh $(sudo service ssh status | grep active | awk '{print $2}')"
+    # sleep 1
+    # echo "[+] ssh $(sudo service ssh status | grep active | awk '{print $2}')"
   fi
 }
 
@@ -66,6 +64,7 @@ sleep 1
 echo "[+] ssh founded in the system"
 sleep 1
 echo "[+] Detected $init_system"
+
 if [[ -f $ssh_config_path ]]
 then
   sleep 1
