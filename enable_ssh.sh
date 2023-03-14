@@ -16,11 +16,12 @@ init_system=$(ps --no-headers -o comm 1)
 
 
 active_ssh_as_service() {
-  ssh_is_inactive=$(sudo systemctl status ssh | grep inactive | awk '{print $2}')
+  ssh_is_inactive_check1=$(sudo systemctl status ssh | grep inactive | awk '{print $2}')
+  ssh_is_inactive_check2=$(sudo service ssh status | grep inactive | awk '{print $2}')
 
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
-  if [ -n "$ssh_is_inactive" ]
+  if [ "$ssh_is_inactive_check1" == "inactive" || "$ssh_is_inactive_check1" == "inactive" ]
   then
     echo "[+] ssh is inactive"
     sleep 1
