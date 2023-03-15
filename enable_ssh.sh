@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-# Verify what Operating System is being used
+PORT=22
+
+ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
+
+
+check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
+
+init_system=$(ps --no-headers -o comm 1)
+
 
 install_ssh() {
 
@@ -23,16 +31,6 @@ install_ssh() {
   ${package_manager} ${package}
 }
 
-install_ssh
-
-# Get ssh config file if exists
-ssh_config_path=$(find /etc/ -name "sshd_config" 2>/dev/null)
-
-check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
-
-init_system=$(ps --no-headers -o comm 1)
-
-
 active_ssh_as_service() {
   echo "[+] Cheking if ssh service is active on the system..."
   sleep 1
@@ -41,47 +39,61 @@ active_ssh_as_service() {
     echo "[+] ssh is inactive"
     sleep 1
     echo "[+] Activating ssh..."
-    sudo systemctl start ssh
-    # sleep 1
-    # echo "[+] ssh $(sudo systemctl status ssh | grep active | awk '{print $2}')"
+    sudo systemctl start ssh ; sudo systemctl restart ssh
   elif [[ "$init_system" == "init" ]]
   then
     echo "[+] ssh is inactive"
     sleep 1
     echo "[+] Activating ssh..."
     echo -n "[+] "
-    sudo service ssh start
-    # sleep 1
-    # echo "[+] ssh $(sudo service ssh status | grep active | awk '{print $2}')"
+    sudo service ssh start ; sudo service ssh restart
   fi
 }
 
-echo "-----------------------------------------------------------------"
+set_new_port() {
+  if [ "$2" == "" ]
+  then
+    echo "-----------------------------------------------------------------"
+    echo "[+] ssh port will be set as default 22"
+    echo "[+] To change the port $0 PORT"
+    echo "[+] Exemple: $0 2222"
+    sleep 1
+  else
+    PORT=$1
+  fi
+}
 
+activating_ssh() {
 
-echo "[+] Looking for ssh on the system..."
-sleep 1
-echo "[+] ssh founded in the system"
-sleep 1
-echo "[+] Detected $init_system"
+  set_new_port $1
 
-if [[ -f $ssh_config_path ]]
-then
+  echo "-----------------------------------------------------------------"
+  echo "[+] Looking for ssh on the system..."
+  sleep 1
+  echo "[+] ssh founded in the system"
+  sleep 1
+  echo "[+] Detected $init_system"
+
   sleep 1
   echo "[+] Path to ssh config file $ssh_config_path"
   sleep 1
   echo "[+] Adding ssh port service on config file..."
-  echo "#-----------------------------------------------------------------" >> $ssh_config_path
-  echo "#[!] SSH Configuration Created by Morphus script" >> $ssh_config_path
-  echo "#-----------------------------------------------------------------" >> $ssh_config_path
-  echo "Port 2222" >> $ssh_config_path
-  echo "PasswordAuthentication yes" >> $ssh_config_path
+
+  echo "# SSH Configuration Created by Morphus script
+  Port $PORT
+  PasswordAuthentication yes
+  " > $ssh_config_path
+
   # PermitRootLogin yes
-  ssh_file_port_line=$(grep "Port 2222" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
-  sleep 1
-  # echo "[+] Port 22 config file added on line $ssh_file_port_line"
+
   active_ssh_as_service
+  sleep 1
+  echo "[+] ssh services running on $PORT"
   sleep 1
   echo "[+] Done!"
   echo "-----------------------------------------------------------------"
-fi
+}
+
+
+install_ssh
+activating_ssh $1
