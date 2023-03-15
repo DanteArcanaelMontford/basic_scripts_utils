@@ -51,7 +51,7 @@ active_ssh_as_service() {
 }
 
 set_new_port() {
-  if [ "$2" == "" ]
+  if [ "$1" == "" ]
   then
     echo "-----------------------------------------------------------------"
     echo "[+] ssh port will be set as default 22"
