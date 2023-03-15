@@ -71,11 +71,13 @@ then
   echo "[+] Path to ssh config file $ssh_config_path"
   sleep 1
   echo "[+] Adding ssh port service on config file..."
-  # echo "[!] SSH Configuration Created by Morphus script"
-  # echo "Port 22" >> $ssh_config_path
-  # echo "#PasswordAuthentication yes" >> $ssh_config_path
+  echo "-----------------------------------------------------------------" >> $ssh_config_path
+  echo "[!] SSH Configuration Created by Morphus script" >> $ssh_config_path
+  echo "-----------------------------------------------------------------" >> $ssh_config_path
+  echo "Port 2222" >> $ssh_config_path
+  echo "PasswordAuthentication yes" >> $ssh_config_path
   # PermitRootLogin yes
-  ssh_file_port_line=$(grep "Port 22" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
+  ssh_file_port_line=$(grep "Port 2222" -rnw /etc/ssh/sshd_config | cut -d ":" -f1)
   sleep 1
   # echo "[+] Port 22 config file added on line $ssh_file_port_line"
   active_ssh_as_service
