@@ -71,9 +71,9 @@ then
   echo "[+] Path to ssh config file $ssh_config_path"
   sleep 1
   echo "[+] Adding ssh port service on config file..."
-  echo "-----------------------------------------------------------------" >> $ssh_config_path
-  echo "[!] SSH Configuration Created by Morphus script" >> $ssh_config_path
-  echo "-----------------------------------------------------------------" >> $ssh_config_path
+  echo "#-----------------------------------------------------------------" >> $ssh_config_path
+  echo "#[!] SSH Configuration Created by Morphus script" >> $ssh_config_path
+  echo "#-----------------------------------------------------------------" >> $ssh_config_path
   echo "Port 2222" >> $ssh_config_path
   echo "PasswordAuthentication yes" >> $ssh_config_path
   # PermitRootLogin yes
