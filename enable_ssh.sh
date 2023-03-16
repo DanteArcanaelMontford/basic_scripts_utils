@@ -169,5 +169,3 @@ else
   help
   main $PORT
 fi
-
-create_sshd_config_folder
