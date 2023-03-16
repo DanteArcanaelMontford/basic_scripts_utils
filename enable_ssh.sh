@@ -52,7 +52,7 @@ install_ssh() {
       package_manager=${os_info[$f]}
     fi
   done
-  package="ssh"
+  package="openssh-server"
   echo $orange
   ${package_manager} ${package}
   echo $white
