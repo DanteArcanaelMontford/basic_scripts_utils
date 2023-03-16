@@ -11,6 +11,7 @@ white=$'\e[0m'
 
 PORT=22
 ROOT_LOGIN="false"
+DATE=$(date)
 
 ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 
@@ -91,6 +92,7 @@ activating_ssh() {
 
   echo "
 # SSH Configuration Created by Morphus's script
+# Date: $DATE
 Port $PORT
 PasswordAuthentication yes
 " > $ssh_config_path
