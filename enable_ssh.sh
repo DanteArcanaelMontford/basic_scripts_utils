@@ -27,7 +27,6 @@ create_sshd_config_folder() {
   fi
 }
 
-create_sshd_config_folder
 
 create_line() {
   echo -e "$cyn"----------------------------------------------------------------------"$white"
