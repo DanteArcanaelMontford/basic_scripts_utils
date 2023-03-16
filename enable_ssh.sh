@@ -41,7 +41,7 @@ install_ssh() {
   os_info[/etc/debian_version]="apt-get install -y"
   os_info[/etc/alpine-release]="apk --update add"
   os_info[/etc/centos-release]="yum install -y"
-  os_info[/etc/fedora-release]="dnf install -y"
+  os_info[/etc/redhat-release]="dnf install -y"
 
   create_line
   echo "$red[+]$white Installing ssh to the system installed..."
