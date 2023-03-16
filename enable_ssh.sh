@@ -51,22 +51,7 @@ active_ssh_as_service() {
   fi
 }
 
-# set_new_port() {
-#   if [ "$1" == "" ]
-#   then
-#     echo "-----------------------------------------------------------------"
-#     echo "[+] ssh port will be set as default 22"
-#     echo "[+] To change the port $0 PORT"
-#     echo "[+] Exemple: $0 2222"
-#     sleep 1
-#   else
-#     PORT=$1
-#   fi
-# }
-
 activating_ssh() {
-
-  set_new_port $PORT
 
   echo "-----------------------------------------------------------------"
   echo "[+] Looking for ssh on the system..."
@@ -104,6 +89,13 @@ help() {
   echo "Options:"
   echo "-p or --port    Will set a different port (defaul is 22)"
   echo "-r or --root"   Will permit to root login
+  echo "-----------------------------------------------------------------"
+  echo "                   Use Cases Examples                            "
+  echo "-----------------------------------------------------------------"
+  echo "No args: $0"
+  echo "With -p arg: $0 -p 222"
+  echo "With -r arg: $0 -r"
+  echo "With -p and -r args: $0 -r -p 222"
 }
 
 main() {
