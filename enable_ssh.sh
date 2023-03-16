@@ -123,7 +123,7 @@ help() {
   echo "No args: $0"
   echo "With -p arg: $0 -p 222"
   echo "With -r arg: $0 -r"
-  echo "With -p and -r args: $0 -r -p 222"  active_ssh_as_service
+  echo "With -p and -r args: $0 -r -p 222"
   echo $white
 }
 
