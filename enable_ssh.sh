@@ -5,7 +5,6 @@ ROOT_LOGIN="false"
 
 ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 
-
 check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 
 init_system=$(ps --no-headers -o comm 1)
@@ -20,7 +19,7 @@ install_ssh() {
   os_info[/etc/fedora-release]="dnf install -y"
 
   echo "-----------------------------------------------------------------"
-  echo "[+] Installing ssh to the system if is not installed..."
+  echo "[+] Installing ssh to the system installed..."
   echo "-----------------------------------------------------------------"
   for f in ${!os_info[@]}
   do
@@ -65,14 +64,16 @@ activating_ssh() {
   sleep 1
   echo "[+] Adding ssh port service on config file..."
 
-  echo "# SSH Configuration Created by Morphus script
-  Port $PORT
-  PasswordAuthentication yes
-  " > $ssh_config_path
+  echo "
+# SSH Configuration Created by Morphus's script
+Port $PORT
+PasswordAuthentication yes
+" > $ssh_config_path
   
   if [ $ROOT_LOGIN == "true" ]
   then
     echo "[+] Root Login Activated"
+    
     echo "PermitRootLogin yes" >> $ssh_config_path
   fi
 
@@ -95,13 +96,14 @@ help() {
   echo "No args: $0"
   echo "With -p arg: $0 -p 222"
   echo "With -r arg: $0 -r"
-  echo "With -p and -r args: $0 -r -p 222"
+  echo "With -p and -r args: $0 -r -p 222"  active_ssh_as_service
 }
 
 main() {
   install_ssh
   activating_ssh $1
 }
+
 
 if [ $# -eq 0 ]
 then
