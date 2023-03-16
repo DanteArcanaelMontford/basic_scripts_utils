@@ -39,8 +39,8 @@ install_ssh() {
 
   declare -A os_info;
   os_info[/etc/debian_version]="apt-get install -y"
-  os_info[/etc/alpine-release]="apk --update add"
-  os_info[/etc/centos-release]="yum install -y"
+  # os_info[/etc/alpine-release]="apk --update add"
+  # os_info[/etc/centos-release]="yum install -y"
   os_info[/etc/redhat-release]="dnf install -y"
 
   create_line
