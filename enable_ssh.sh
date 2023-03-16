@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+red=$'\e[1;31m'
+green=$'\e[1;32m'
+blue=$'\e[1;34m'
+mag=$'\e[1;35m'
+cyn=$'\e[1;36m'
+yellow=$'\33[0;33m'
+white=$'\e[0m'
+
 PORT=22
 ROOT_LOGIN="false"
 
@@ -8,6 +16,22 @@ ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 
 init_system=$(ps --no-headers -o comm 1)
+
+create_line() {
+  echo -e "$cyn"-----------------------------------------------------------------"$white"
+}
+
+banner() {
+  create_line
+  echo "$yellow
+  ██████   █████  ███    ██ ███    ██ ███████ ██████  
+  ██   ██ ██   ██ ████   ██ ████   ██ ██      ██   ██ 
+  ██████  ███████ ██ ██  ██ ██ ██  ██ █████   ██████  
+  ██   ██ ██   ██ ██  ██ ██ ██  ██ ██ ██      ██   ██ 
+  ██████  ██   ██ ██   ████ ██   ████ ███████ ██   ██                                                            
+"$white
+}
+
 
 
 install_ssh() {
@@ -18,9 +42,9 @@ install_ssh() {
   os_info[/etc/centos-release]="yum install -y"
   os_info[/etc/fedora-release]="dnf install -y"
 
-  echo "-----------------------------------------------------------------"
-  echo "[+] Installing ssh to the system installed..."
-  echo "-----------------------------------------------------------------"
+  create_line
+  echo "$red[+]$white Installing ssh to the system installed..."
+  create_line
   for f in ${!os_info[@]}
   do
     if [[ -f $f ]];then
@@ -32,37 +56,35 @@ install_ssh() {
 }
 
 active_ssh_as_service() {
-  echo "[+] Cheking if ssh service is active on the system..."
+  echo "$red[+]$white $green Cheking if ssh service is active on the system...$white"
   sleep 1
   if [[ "$init_system" == "systemd" ]]
   then
-    echo "[+] ssh is inactive"
     sleep 1
-    echo "[+] Activating ssh..."
+    echo "$red[+]$white $green Activating ssh... $white"
     sudo systemctl start ssh ; sudo systemctl restart ssh
   elif [[ "$init_system" == "init" ]]
   then
-    echo "[+] ssh is inactive"
     sleep 1
-    echo "[+] Activating ssh..."
-    echo -n "[+] "
+    echo "$red[+]$white $green Activating ssh...$white"
+    echo -n "$red[+]$white "
     sudo service ssh start ; sudo service ssh restart
   fi
 }
 
 activating_ssh() {
 
-  echo "-----------------------------------------------------------------"
-  echo "[+] Looking for ssh on the system..."
+  create_line
+  echo "$red[+]$white $green Looking for ssh on the system...$white"
   sleep 1
-  echo "[+] ssh founded in the system"
+  echo "$red[+]$white $green ssh founded in the system $white"
   sleep 1
-  echo "[+] Detected $init_system"
+  echo "$red[+]$white $green Detected $init_system $white"
 
   sleep 1
-  echo "[+] Path to ssh config file $ssh_config_path"
+  echo "$red[+]$white $green Path to ssh config file $ssh_config_path $white"
   sleep 1
-  echo "[+] Adding ssh port service on config file..."
+  echo "$red[+]$white $green Adding ssh port service on config file...$white"
 
   echo "
 # SSH Configuration Created by Morphus's script
@@ -72,27 +94,27 @@ PasswordAuthentication yes
   
   if [ $ROOT_LOGIN == "true" ]
   then
-    echo "[+] Root Login Activated"
+    echo "$red[+]$white $red Root Login Activated $white"
     
     echo "PermitRootLogin yes" >> $ssh_config_path
   fi
 
   active_ssh_as_service
   sleep 1
-  echo "[+] ssh services running on $PORT"
+  echo "$red[+]$white $green ssh services running on $red $PORT $white"
   sleep 1
-  echo "[+] Done!"
-  echo "-----------------------------------------------------------------"
+  echo "$red[+]$white $green Done! $white"
+  create_line
 }
 
 help() {
-  echo "-----------------------------------------------------------------"
+  create_line
   echo "Options:"
   echo "-p or --port    Will set a different port (defaul is 22)"
   echo "-r or --root"   Will permit to root login
-  echo "-----------------------------------------------------------------"
+  create_line
   echo "                   Use Cases Examples                            "
-  echo "-----------------------------------------------------------------"
+  create_line
   echo "No args: $0"
   echo "With -p arg: $0 -p 222"
   echo "With -r arg: $0 -r"
@@ -108,6 +130,7 @@ main() {
 if [ $# -eq 0 ]
 then
   clear
+  banner
   help
   main
 else
@@ -121,6 +144,7 @@ else
     esac
   done
   clear
+  banner
   help
   main $PORT
 fi
