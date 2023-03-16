@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 PORT=22
+ROOT_LOGIN="false"
 
 ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 
@@ -50,22 +51,22 @@ active_ssh_as_service() {
   fi
 }
 
-set_new_port() {
-  if [ "$1" == "" ]
-  then
-    echo "-----------------------------------------------------------------"
-    echo "[+] ssh port will be set as default 22"
-    echo "[+] To change the port $0 PORT"
-    echo "[+] Exemple: $0 2222"
-    sleep 1
-  else
-    PORT=$1
-  fi
-}
+# set_new_port() {
+#   if [ "$1" == "" ]
+#   then
+#     echo "-----------------------------------------------------------------"
+#     echo "[+] ssh port will be set as default 22"
+#     echo "[+] To change the port $0 PORT"
+#     echo "[+] Exemple: $0 2222"
+#     sleep 1
+#   else
+#     PORT=$1
+#   fi
+# }
 
 activating_ssh() {
 
-  set_new_port $1
+  set_new_port $PORT
 
   echo "-----------------------------------------------------------------"
   echo "[+] Looking for ssh on the system..."
@@ -83,8 +84,12 @@ activating_ssh() {
   Port $PORT
   PasswordAuthentication yes
   " > $ssh_config_path
-
-  # PermitRootLogin yes
+  
+  if [ $ROOT_LOGIN == "true" ]
+  then
+    echo "[+] Root Login Activated"
+    echo "PermitRootLogin yes" >> $ssh_config_path
+  fi
 
   active_ssh_as_service
   sleep 1
@@ -94,6 +99,34 @@ activating_ssh() {
   echo "-----------------------------------------------------------------"
 }
 
+help() {
+  echo "-----------------------------------------------------------------"
+  echo "Options:"
+  echo "-p or --port    Will set a different port (defaul is 22)"
+  echo "-r or --root"   Will permit to root login
+}
 
-install_ssh
-activating_ssh $1
+main() {
+  install_ssh
+  activating_ssh $1
+}
+
+if [ $# -eq 0 ]
+then
+  clear
+  help
+  main
+else
+  while getopts 'p:r' flag
+  do
+    case "${flag}" in
+      
+      "p") PORT="${OPTARG}";;
+      
+      "r") ROOT_LOGIN="true";;
+    esac
+  done
+  clear
+  help
+  main $PORT
+fi

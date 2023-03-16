@@ -82,7 +82,7 @@ print_logs() {
 
 help() {
     create_line
-    echo -e "$red[+]$white -h or --help -> This menu"
+    echo -e "$red[+]$white -h or --help => This menu"
     echo "$red[+]$white -p or --print => Print top 10 most usage processes"
     echo "$red[+]$white -l or --logs => Create a directory with basic logs of the most RAM usage processes"
     echo "$red[+]$white -pl or --print-logs => Print logs into log directory"
