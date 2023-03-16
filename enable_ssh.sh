@@ -23,10 +23,7 @@ init_system=$(ps --no-headers -o comm 1)
 create_sshd_config_folder() {
   if [ ! -d /etc/ssh/sshd_config.d ];
   then
-    echo "Essa porra de pasta não existe, vou criar!"
     sudo mkdir /etc/ssh/sshd_config.d/
-  else
-    echo "Essa porra existe já, nsem sei porque tá caçando isso!"
   fi
 }
 
