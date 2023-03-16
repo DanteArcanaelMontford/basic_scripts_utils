@@ -19,6 +19,18 @@ check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 
 init_system=$(ps --no-headers -o comm 1)
 
+
+create_sshd_config_folder() {
+  if [ ! -d /etc/ssh/sshd_config.d ];
+  then
+    sudo mkdir /etc/ssh/sshd_config.d/
+  else
+    echo "Essa porra existe!"
+  fi
+}
+
+create_sshd_config_folder
+
 create_line() {
   echo -e "$cyn"----------------------------------------------------------------------"$white"
 }
