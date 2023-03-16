@@ -23,9 +23,10 @@ init_system=$(ps --no-headers -o comm 1)
 create_sshd_config_folder() {
   if [ ! -d /etc/ssh/sshd_config.d ];
   then
+    echo "Essa porra de pasta não existe, vou criar!"
     sudo mkdir /etc/ssh/sshd_config.d/
   else
-    echo "Essa porra existe!"
+    echo "Essa porra existe já, nsem sei porque tá caçando isso!"
   fi
 }
 
@@ -149,7 +150,7 @@ main() {
 
 if [ $# -eq 0 ]
 then
-  clear
+  # clear
   banner
   help
   main
@@ -163,8 +164,10 @@ else
       "r") ROOT_LOGIN="true";;
     esac
   done
-  clear
+  # clear
   banner
   help
   main $PORT
 fi
+
+create_sshd_config_folder
