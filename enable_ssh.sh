@@ -5,7 +5,8 @@ green=$'\e[1;32m'
 blue=$'\e[1;34m'
 mag=$'\e[1;35m'
 cyn=$'\e[1;36m'
-yellow=$'\33[0;33m'
+orange=$'\33[0;33m'
+yellow=$'\33[1;33m'
 white=$'\e[0m'
 
 PORT=22
@@ -18,17 +19,17 @@ check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 init_system=$(ps --no-headers -o comm 1)
 
 create_line() {
-  echo -e "$cyn"-----------------------------------------------------------------"$white"
+  echo -e "$cyn"----------------------------------------------------------------------"$white"
 }
 
 banner() {
   create_line
-  echo "$yellow
-  ██████   █████  ███    ██ ███    ██ ███████ ██████  
-  ██   ██ ██   ██ ████   ██ ████   ██ ██      ██   ██ 
-  ██████  ███████ ██ ██  ██ ██ ██  ██ █████   ██████  
-  ██   ██ ██   ██ ██  ██ ██ ██  ██ ██ ██      ██   ██ 
-  ██████  ██   ██ ██   ████ ██   ████ ███████ ██   ██                                                            
+  echo "$orange
+          ██████   █████  ███    ██ ███    ██ ███████ ██████  
+          ██   ██ ██   ██ ████   ██ ████   ██ ██      ██   ██ 
+          ██████  ███████ ██ ██  ██ ██ ██  ██ █████   ██████  
+          ██   ██ ██   ██ ██  ██ ██ ██  ██ ██ ██      ██   ██ 
+          ██████  ██   ██ ██   ████ ██   ████ ███████ ██   ██                                                            
 "$white
 }
 
@@ -52,7 +53,9 @@ install_ssh() {
     fi
   done
   package="ssh"
+  echo $orange
   ${package_manager} ${package}
+  echo $white
 }
 
 active_ssh_as_service() {
@@ -109,16 +112,19 @@ PasswordAuthentication yes
 
 help() {
   create_line
+  echo $yellow
   echo "Options:"
   echo "-p or --port    Will set a different port (defaul is 22)"
   echo "-r or --root"   Will permit to root login
   create_line
   echo "                   Use Cases Examples                            "
   create_line
+  echo $yellow
   echo "No args: $0"
   echo "With -p arg: $0 -p 222"
   echo "With -r arg: $0 -r"
   echo "With -p and -r args: $0 -r -p 222"  active_ssh_as_service
+  echo $white
 }
 
 main() {
