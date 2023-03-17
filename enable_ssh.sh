@@ -24,6 +24,7 @@ create_sshd_config_folder() {
   if [ ! -d /etc/ssh/sshd_config.d ];
   then
     sudo mkdir /etc/ssh/sshd_config.d/
+    sudo chmod +755 /etc/ssh/sshd_config.d/
   fi
 }
 
@@ -146,7 +147,7 @@ main() {
 
 if [ $# -eq 0 ]
 then
-  # clear
+  clear
   banner
   help
   main
@@ -160,7 +161,7 @@ else
       "r") ROOT_LOGIN="true";;
     esac
   done
-  # clear
+  clear
   banner
   help
   main $PORT
