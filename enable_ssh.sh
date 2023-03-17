@@ -82,7 +82,7 @@ active_ssh_as_service() {
     sleep 1
     echo "$red[+]$white $green Activating ssh...$white"
     echo -n "$red[+]$white "
-    sudo echo -n "$green  "; service ssh start ; echo -n "$red[+]$white $green "; sudo service ssh restart ; echo $white
+    sudo echo -n "$green "; service ssh start ; echo -n "$red[+]$white $green "; sudo service ssh restart ; echo -n $white
   fi
 }
 
