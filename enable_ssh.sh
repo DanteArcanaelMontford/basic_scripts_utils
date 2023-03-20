@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+################################## VARIABLES ##################################
 red=$'\e[1;31m'
 green=$'\e[1;32m'
 blue=$'\e[1;34m'
@@ -10,8 +11,8 @@ yellow=$'\33[1;33m'
 white=$'\e[0m'
 
 PORT=22
-ROOT_LOGIN="false"
 DATE=$(date)
+DISABLE="false"
 
 ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 
@@ -19,6 +20,7 @@ check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 
 init_system=$(ps --no-headers -o comm 1)
 
+################################## FUNCTIONS ##################################
 
 create_sshd_config_folder() {
   if [ ! -d /etc/ssh/sshd_config.d ];
@@ -28,6 +30,26 @@ create_sshd_config_folder() {
   fi
 }
 
+disable_ssh() {
+  if [ -f /etc/ssh/sshd_config.d/morphus.conf ];
+  then
+    sudo rm -f /etc/ssh/sshd_config.d/morphus.conf
+  fi
+
+  if [[ "$init_system" == "systemd" ]]
+  then
+    sleep 1
+    echo "$red[+]$white $green Disabling ssh... $white"
+    sudo echo -n "$green "; systemctl stop ssh ; sudo systemctl disable ssh ; echo -n $white
+  elif [[ "$init_system" == "init" ]]
+  then
+    sleep 1
+    echo "$red[+]$white $green Activating ssh...$white"
+    echo -n "$red[+]$white "
+    sudo echo -n "$green "; service ssh stop ; sudo service ssh disable ; echo -n $white
+  fi
+
+}
 
 create_line() {
   echo -e "$cyn"----------------------------------------------------------------------"$white"
@@ -43,8 +65,6 @@ banner() {
           ██████  ██   ██ ██   ████ ██   ████ ███████ ██   ██                                                            
 "$white
 }
-
-
 
 install_ssh() {
 
@@ -88,6 +108,15 @@ active_ssh_as_service() {
 
 activating_ssh() {
 
+  if [ $DISABLE == "true" ]
+  then
+    create_line
+    disable_ssh
+    echo "$red[+]$white $green Done! $white"
+    create_line
+    exit 1
+  fi
+
   create_line
   echo "$red[+]$white $green Looking for ssh on the system...$white"
   sleep 1
@@ -107,13 +136,6 @@ Port $PORT
 PasswordAuthentication yes
 " > $ssh_config_path
   
-  if [ $ROOT_LOGIN == "true" ]
-  then
-    echo "$red[+]$white $red Root Login Activated $white"
-    
-    echo "PermitRootLogin yes" >> $ssh_config_path
-  fi
-
   active_ssh_as_service
   sleep 1
   echo "$red[+]$white $green ssh services running on $red $PORT $white"
@@ -126,16 +148,15 @@ help() {
   create_line
   echo $yellow
   echo "Options:"
-  echo "-p or --port    Will set a different port (defaul is 22)"
-  echo "-r or --root"   Will permit to root login
+  echo "-p  Will set a different port (defaul is 22)"
+  # echo "-d  Disable service and delete config file from path"
   create_line
   echo "                   Use Cases Examples                            "
   create_line
   echo $yellow
   echo "No args: $0"
   echo "With -p arg: $0 -p 222"
-  echo "With -r arg: $0 -r"
-  echo "With -p and -r args: $0 -r -p 222"
+  # echo "With -d arg: $0 -d"
   echo $white
 }
 
@@ -144,7 +165,7 @@ main() {
   activating_ssh $1
 }
 
-
+################################## ARGUMENTS AND RUN ##################################
 if [ $# -eq 0 ]
 then
   clear
@@ -152,13 +173,16 @@ then
   help
   main
 else
-  while getopts 'p:r' flag
+  while getopts "d:p" flag
   do
     case "${flag}" in
       
       "p") PORT="${OPTARG}";;
       
       "r") ROOT_LOGIN="true";;
+
+      # "d") DISABLE="true";;
+
     esac
   done
   clear
@@ -166,3 +190,4 @@ else
   help
   main $PORT
 fi
+####################################################################################
