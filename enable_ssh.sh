@@ -14,6 +14,9 @@ PORT=22
 DATE=$(date)
 DISABLE="false"
 
+USER=''
+USER_FLAG="false"
+
 ssh_config_path=/etc/ssh/sshd_config.d/morphus.conf
 
 check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
@@ -58,13 +61,14 @@ create_line() {
 banner() {
   create_line
   echo "$orange
-          ██████   █████  ███    ██ ███    ██ ███████ ██████  
-          ██   ██ ██   ██ ████   ██ ████   ██ ██      ██   ██ 
-          ██████  ███████ ██ ██  ██ ██ ██  ██ █████   ██████  
-          ██   ██ ██   ██ ██  ██ ██ ██  ██ ██ ██      ██   ██ 
-          ██████  ██   ██ ██   ████ ██   ████ ███████ ██   ██                                                            
+ █████   ██████ ████████ ██ ██    ██  ███████ ███████ ██   ██ 
+██   ██ ██         ██    ██ ██    ██  ██      ██      ██   ██ 
+███████ ██         ██    ██ ██    ██  ███████ ███████ ███████ 
+██   ██ ██         ██    ██  ██  ██        ██      ██ ██   ██ 
+██   ██  ██████    ██    ██   ████    ███████ ███████ ██   ██
 "$white
 }
+# You can change banner here: https://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=Banner
 
 install_ssh() {
 
@@ -75,7 +79,7 @@ install_ssh() {
   os_info[/etc/redhat-release]="yum install -y"
 
   create_line
-  echo "$red[+]$white Installing ssh to the system installed..."
+  echo "$red[+]$white Installing ssh to the system..."
   create_line
   for f in ${!os_info[@]}
   do
@@ -87,6 +91,34 @@ install_ssh() {
   echo $orange
   ${package_manager} ${package}
   echo $white
+}
+
+check_user() {
+  match_sudoer_user=$(sudo -l -U $USER | grep Matching | cut -d ' ' -f1 2>/dev/null)
+  if [ "$match_sudoer_user" == "Matching" ]
+  then
+    echo "$red[+]$white $green User $USER is sudo $white"
+    echo "$red[+]$white $green Done! $white"
+    menu_line
+    exit 1
+  fi 
+
+  echo "$red[+]$white $red $USER do not exists or is not sudo user $white"
+}
+
+create_new_user() {
+  menu_line
+  echo -n $green
+  read -rp "$red[+]$green Please enter the username to be created: " new_user
+  adduser $new_user
+  menu_line
+  sleep 1
+  echo "$red[+]$green Adding user to sudoers group"
+  usermod -aG sudo $new_user
+  echo "$red[+]$green Done!$white"
+  menu_line
+  exit 0
+  echo -n $white
 }
 
 active_ssh_as_service() {
@@ -190,4 +222,52 @@ else
   help
   main $PORT
 fi
+
+####################################################################################
+MENU_FLAG=""
+menu_line() {
+  echo -e "$cyn""--------------------------------------------------------""$white"
+}
+
+function show_menu() {
+  echo "$red[*]$yellow $(date) $white" 
+  menu_line
+  echo "$cyn|$green                   Select an Option                   $cyn|$white"
+  menu_line
+  echo "$cyn|  [1]$white $blue===>$white $yellow To check an existing user to this service $cyn|$white"
+  echo "$cyn|  [2]$white $blue===>$white $yellow To create a new user to this service      $cyn|$white"
+  menu_line
+}
+
+run_menu() {
+  while true
+  do
+    show_menu
+    read_input
+  done
+}
+
+function read_input() {
+  local c
+  echo -n $yellow
+  read -rp "Enter your choice [ 1 or 2 ]:  " c
+  menu_line
+  echo -n $white
+  case $c in
+    1) 
+      echo -n "$green"
+      read -rp "Enter the of your user to check: " USER
+      menu_line
+      echo -n "$white"
+      check_user $USER
+      run_menu
+      exit 0
+    ;;
+    2) create_new_user ;;
+    *) echo "$red[!] Select a valid Option [1 or 2]:  $white" ;;
+  esac
+}
+
+run_menu
+
 ####################################################################################
