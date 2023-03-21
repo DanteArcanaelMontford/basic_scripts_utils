@@ -107,7 +107,6 @@ check_user() {
 }
 
 create_new_user() {
-  menu_line
   echo -n $green
   read -rp "$red[+]$green Please enter the username to be created: " new_user
   adduser $new_user
@@ -115,6 +114,7 @@ create_new_user() {
   sleep 1
   echo "$red[+]$green Adding user to sudoers group"
   usermod -aG sudo $new_user
+  menu_line
   echo "$red[+]$green Done!$white"
   menu_line
   exit 0
