@@ -71,11 +71,13 @@ create_line() {
 banner() {
   create_line
   echo "$orange
- █████   ██████ ████████ ██ ██    ██  ███████ ███████ ██   ██ 
-██   ██ ██         ██    ██ ██    ██  ██      ██      ██   ██ 
-███████ ██         ██    ██ ██    ██  ███████ ███████ ███████ 
-██   ██ ██         ██    ██  ██  ██        ██      ██ ██   ██ 
-██   ██  ██████    ██    ██   ████    ███████ ███████ ██   ██
+███    ███  ██████  ██████  ██████  ██   ██ ██    ██ ███████ 
+████  ████ ██    ██ ██   ██ ██   ██ ██   ██ ██    ██ ██      
+██ ████ ██ ██    ██ ██████  ██████  ███████ ██    ██ ███████ 
+██  ██  ██ ██    ██ ██   ██ ██      ██   ██ ██    ██      ██ 
+██      ██  ██████  ██   ██ ██      ██   ██  ██████  ███████
+
+                          Active SSH
 "$white
 }
 # You can change banner here: https://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=Banner
@@ -210,6 +212,20 @@ PasswordAuthentication yes
   create_line
 }
 
+usage() {
+  create_line
+  echo "$cyn|                             $yellow U S A G E                             $cyn|"
+  create_line 
+  echo "$cyn|$yellow Usage: $0 [option]                                    $cyn|"
+  echo "$cyn|$yellow Usage example: $0 -p 2222                             $cyn|"
+  echo "$cyn|$yellow options:                                                           $cyn|"
+  echo "$cyn|$yellow     -h : Show this help                                            $cyn|"
+  echo "$cyn|$yellow     -p : Set a new port to ssh                                     $cyn|"
+  create_line
+  exit
+}
+
+
 help() {
   create_line
   echo $yellow
@@ -236,14 +252,15 @@ if [ $# -eq 0 ]
 then
   clear
   banner
-  help
+  # help
   main
 else
-  while getopts "p" flag
+  while getopts "p:h" flag
   do
     case "${flag}" in
       
-      "p") PORT="${OPTARG}";;
+      "p") PORT="${OPTARG}" ;;
+      "h") usage;;
 
       # "d") DISABLE="true";;
 
@@ -251,7 +268,7 @@ else
   done
   clear
   banner
-  help
+  # help
   main $PORT
 fi
 
@@ -260,6 +277,7 @@ MENU_FLAG=""
 menu_line() {
   echo -e "$cyn""--------------------------------------------------------""$white"
 }
+
 
 function show_menu() {
   echo "$red[*]$yellow $(date) $white" 
