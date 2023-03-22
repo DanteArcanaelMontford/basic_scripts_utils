@@ -110,9 +110,13 @@ install_ssh() {
 check_user() {
   user_exists=$(getent passwd $USER)
   match_sudoer_user=$(sudo -l -U $USER | egrep "Defaults")
-  if [[ -z "$user_exists" && -z "$match_sudoer_user" ]]
+  if [[ -z "$user_exists" ]]
   then
-    echo "$red[+]$white $red $USER do not exists or is not sudo user $white"
+    echo "$red[+]$white $red $USER do not exists!$white"
+    return
+  elif [[ -z "$match_sudoer_user" ]]
+  then
+    echo "$red[+]$white $red $USER has no sudo powers!$white"
     return
   fi 
 
