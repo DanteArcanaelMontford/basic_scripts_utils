@@ -136,6 +136,7 @@ check_user() {
       sleep 1
       echo "$red[+]$green Adding $USER to sudoers group"
       usermod -aG ${group} $USER
+      sleep 1
       echo "$red[+]$green Done!$white"
       menu_line
       exit 0
@@ -169,7 +170,12 @@ create_new_user() {
   done
 
   echo -n $green
-  read -rp "$red[+]$green Please enter the username to be created: " new_user
+  read -rp "$red[?]$green Please enter the username to be created: " new_user
+  if [[ "$new_user" == "" || -z "$new_user" ]]
+  then
+    echo "$red[!] Invalid input, please try again! $white"
+    run_menu
+  fi
   adduser $new_user
   menu_line
   sleep 1
