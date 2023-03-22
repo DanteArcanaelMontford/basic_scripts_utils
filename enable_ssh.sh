@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+root_or_sudo_check() {
+  if [ "$(id -u)" != "0" ]
+  then
+    echo "$red[Warning]$yellow This script must be run as $green root $yellow or $green sudo!$white" 1>&2
+    exit 1
+  fi
+}
+
 ################################## VARIABLES ##################################
 red=$'\e[1;31m'
 green=$'\e[1;32m'
@@ -24,6 +32,8 @@ check_stat=`ps -ef | grep 'ssh' | awk '{print $2}'`
 init_system=$(ps --no-headers -o comm 1)
 
 ################################## FUNCTIONS ##################################
+
+root_or_sudo_check
 
 create_sshd_config_folder() {
   if [ ! -d /etc/ssh/sshd_config.d ];
