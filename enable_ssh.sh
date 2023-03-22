@@ -108,6 +108,18 @@ install_ssh() {
 }
 
 check_user() {
+  declare -A os_info;
+  os_info[/etc/debian_version]="sudo"
+  os_info[/etc/redhat-release]="wheel"
+
+  for f in ${!os_info[@]}
+  do
+    if [[ -f $f ]];then
+      group=${os_info[$f]}
+    fi
+  done
+
+
   user_exists=$(getent passwd $USER)
   match_sudoer_user=$(sudo -l -U $USER | egrep "Defaults")
   if [[ -z "$user_exists" ]]
@@ -117,7 +129,24 @@ check_user() {
   elif [[ -z "$match_sudoer_user" ]]
   then
     echo "$red[+]$white $red $USER has no sudo powers!$white"
-    return
+    read -rp "$red[?]$green Want to set this user as sudo?(y/N): " add_to_sudo ; echo -n $white
+
+    if [[ "$add_to_sudo" == "y" || "$add_to_sudo" == "Y" ]]
+    then
+      sleep 1
+      echo "$red[+]$green Adding $USER to sudoers group"
+      usermod -aG ${group} $USER
+      echo "$red[+]$green Done!$white"
+      menu_line
+      exit 0
+    elif [[ "$add_to_sudo" == "n" || "$add_to_sudo" == "Y" ]]
+    then
+      echo "$green[+] Try again please! $white"
+      run_menu
+    else
+      echo "$red[Warning] Invalid option, try again please! $white"
+      run_menu
+    fi
   fi 
 
   echo "$red[+]$white $green User $USER is sudo $white"
