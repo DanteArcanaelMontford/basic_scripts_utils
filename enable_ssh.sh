@@ -117,6 +117,7 @@ check_user() {
   elif [[ -z "$match_sudoer_user" ]]
   then
     echo "$red[+]$white $red $USER has no sudo powers!$white"
+    return
   fi 
 
   echo "$red[+]$white $green User $USER is sudo $white"
