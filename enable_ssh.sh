@@ -114,7 +114,6 @@ create_new_user() {
   sleep 1
   echo "$red[+]$green Adding user to sudoers group"
   usermod -aG sudo $new_user
-  menu_line
   echo "$red[+]$green Done!$white"
   menu_line
   exit 0
@@ -128,13 +127,13 @@ active_ssh_as_service() {
   then
     sleep 1
     echo "$red[+]$white $green Activating ssh... $white"
-    sudo systemctl start ssh ; sudo systemctl restart ssh
+    sudo systemctl start sshd ; sudo systemctl restart sshd
   elif [[ "$init_system" == "init" ]]
   then
     sleep 1
     echo "$red[+]$white $green Activating ssh...$white"
     echo -n "$red[+]$white "
-    sudo echo -n "$green "; service ssh start ; echo -n "$red[+]$white $green "; sudo service ssh restart ; echo -n $white
+    sudo echo -n "$green "; service sshd start ; echo -n "$red[+]$white $green "; sudo service sshd restart ; echo -n $white
   fi
 }
 
