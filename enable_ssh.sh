@@ -239,13 +239,11 @@ then
   help
   main
 else
-  while getopts "d:p" flag
+  while getopts "p" flag
   do
     case "${flag}" in
       
       "p") PORT="${OPTARG}";;
-      
-      "r") ROOT_LOGIN="true";;
 
       # "d") DISABLE="true";;
 
