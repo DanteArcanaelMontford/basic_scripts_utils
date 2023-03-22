@@ -131,6 +131,12 @@ check_user() {
     echo "$red[+]$white $red $USER has no sudo powers!$white"
     read -rp "$red[?]$green Want to set this user as sudo?(y/N): " add_to_sudo ; echo -n $white
 
+    if [[ "$add_to_sudo" == "" || -z "$add_to_sudo" ]]
+    then
+      echo "$red[!] Invalid input, please try again! $white"
+      run_menu
+    fi
+
     if [[ "$add_to_sudo" == "y" || "$add_to_sudo" == "Y" ]]
     then
       sleep 1
