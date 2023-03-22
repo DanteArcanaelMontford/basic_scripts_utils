@@ -96,8 +96,8 @@ install_ssh() {
 }
 
 check_user() {
-  match_sudoer_user=$(sudo -l -U $USER | grep Matching | cut -d ' ' -f1 2>/dev/null)
-  if [ "$match_sudoer_user" == "Matching" ]
+  match_sudoer_user=$(sudo -l -U $USER | egrep "Defaults")
+  if [ -z "$match_sudoer_user" == "Defaults" ]
   then
     echo "$red[+]$white $green User $USER is sudo $white"
     echo "$red[+]$white $green Done! $white"
