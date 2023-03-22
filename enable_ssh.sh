@@ -111,7 +111,7 @@ check_user() {
   then
     echo "$red[+]$white $red $USER do not exists or is not sudo user $white"
   fi 
-  
+
   echo "$red[+]$white $green User $USER is sudo $white"
   echo "$red[+]$white $green Done! $white"
   menu_line
@@ -145,19 +145,30 @@ create_new_user() {
 }
 
 active_ssh_as_service() {
+  declare -A os_info;
+  os_info[/etc/debian_version]="ssh"
+  os_info[/etc/redhat-release]="sshd"
+
+  for f in ${!os_info[@]}
+  do
+    if [[ -f $f ]];then
+      service=${os_info[$f]}
+    fi
+  done
+
   echo "$red[+]$white $green Cheking if ssh service is active on the system...$white"
   sleep 1
   if [[ "$init_system" == "systemd" ]]
   then
     sleep 1
     echo "$red[+]$white $green Activating ssh... $white"
-    sudo systemctl start sshd ; sudo systemctl restart sshd
+    sudo systemctl start ${service} ; sudo systemctl restart ${service}
   elif [[ "$init_system" == "init" ]]
   then
     sleep 1
     echo "$red[+]$white $green Activating ssh...$white"
     echo -n "$red[+]$white "
-    sudo echo -n "$green "; service sshd start ; echo -n "$red[+]$white $green "; sudo service sshd restart ; echo -n $white
+    sudo echo -n "$green "; service ${service} start ; echo -n "$red[+]$white $green "; sudo service ${service} restart ; echo -n $white
   fi
 }
 
