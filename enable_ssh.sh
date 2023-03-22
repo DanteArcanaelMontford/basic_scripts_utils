@@ -70,6 +70,8 @@ banner() {
 }
 # You can change banner here: https://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=Banner
 
+
+
 install_ssh() {
 
   declare -A os_info;
@@ -107,13 +109,24 @@ check_user() {
 }
 
 create_new_user() {
+  declare -A os_info;
+  os_info[/etc/debian_version]="sudo"
+  os_info[/etc/redhat-release]="wheel"
+
+  for f in ${!os_info[@]}
+  do
+    if [[ -f $f ]];then
+      group=${os_info[$f]}
+    fi
+  done
+
   echo -n $green
   read -rp "$red[+]$green Please enter the username to be created: " new_user
   adduser $new_user
   menu_line
   sleep 1
   echo "$red[+]$green Adding user to sudoers group"
-  usermod -aG sudo $new_user
+  usermod -aG ${group} $new_user
   echo "$red[+]$green Done!$white"
   menu_line
   exit 0
